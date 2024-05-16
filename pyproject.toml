@@ -1,0 +1,27 @@
+[project]
+name = "tokengrams"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "Nora Belrose", email = "nora@eleuther.ai" }
+]
+dependencies = [
+    "pip>=24.0",
+]
+readme = "README.md"
+requires-python = ">= 3.8"
+
+
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[tool.rye]
+managed = true
+dev-dependencies = []
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/tokengrams"]
