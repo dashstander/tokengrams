@@ -7,6 +7,10 @@ authors = [
 ]
 dependencies = [
     "pip>=24.0",
+    "numpy>=1.24.4",
+    "hypothesis>=6.102.6",
+    "pytest>=8.2.1",
+    "maturin>=1.5.1",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"
