@@ -47,16 +47,15 @@ fn naive_table(text: &[u16]) -> Vec<u64> {
 
 
 fn sais_table(text: &[u16]) -> Vec<u64> {
-    // assert!(text.len() <= u64::MAX as usize);
     let mut sa = vec![0u64; text.len()];
     let mut stypes = SuffixTypes::new(text.len() as u64);
     let mut bins = Bins::new();
-    sais(&mut *sa, &mut stypes, &mut bins, text);
+    sais(&mut sa, &mut stypes, &mut bins, text);
     sa
 }
 
 
-fn sais<T: Text>(sa: &mut [u64], stypes: &mut SuffixTypes, bins: &mut Bins, text: &T) {
+fn sais<T: Text + ?Sized>(sa: &mut [u64], stypes: &mut SuffixTypes, bins: &mut Bins, text: &T) {
     match text.len() {
         0 => return,
         1 => {
@@ -247,7 +246,7 @@ impl SuffixTypes {
         }
     }
 
-    fn compute<T: Text>(&mut self, text: &T) {
+    fn compute<T: Text + ?Sized>(&mut self, text: &T) {
         if text.len() == 0 {
             return;
         }
@@ -428,39 +427,30 @@ impl Bins {
 /// This enables us to expose a common interface between a `Vec<u16>` (the token values) and
 /// a `Vec<u64>`. Specifically, a `Vec<u64>` is used for lexical renaming.
 trait Text {
-    /// An iterator over characters.
 
-    /// The length of the text.
     fn len(&self) -> u64;
 
-    /// The character previous to the byte index `i`.
-    fn prev(&self, i: u64) -> (u64, u64);
-
-    /// The character at byte index `i`.
     fn char_at(&self, i: u64) -> u64;
 
-    /// Compare two strings at byte indices `w1` and `w2`.
+    fn prev(&self, i: u64) -> (u64, u64);
+
     fn wstring_equal(&self, stypes: &SuffixTypes, w1: u64, w2: u64) -> bool;
 }
  
 
  
 impl Text for [u16] {
-
-    #[inline]
     fn len(&self) -> u64 {
         self.len() as u64
     }
 
-    #[inline]
+    fn char_at(&self, i: u64) -> u64 {
+        self[i as usize] as u64
+    }
+
     fn prev(&self, i: u64) -> (u64, u64) {
         (i - 1, self[i as usize - 1] as u64)
     }
-
-    #[inline]
-fn char_at(&self, i: u64) -> u64 {
-    self[i as usize] as u64
-}
 
     fn wstring_equal(&self, stypes: &SuffixTypes, w1: u64, w2: u64) -> bool {
         let w1chars = self[w1 as usize..].iter().enumerate();
