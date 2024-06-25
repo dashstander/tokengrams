@@ -26,4 +26,5 @@ dev-dependencies = [
 
 [tool.maturin]
 module-name = "tokengrams.tokengrams"
+profile = "release"
 features = ["pyo3/extension-module"]
